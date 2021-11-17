@@ -24,7 +24,7 @@ class Options:
         self.parser.add_argument("--learning_rate", default=3e-2, type=float, help="The initial learning rate for SGD.")
         self.parser.add_argument("--momentum", default=0.9, type=float, help="The momentum for SGD.")
         self.parser.add_argument("--weight_decay", default=0.0, type=float, help="Weight deay if we apply some.")
-        self.parser.add_argument("--num_steps", default=50000, type=int, help="Total number of training epochs to perform.")
+        self.parser.add_argument("--num_steps", default=10000, type=int, help="Total number of training epochs to perform.")
         self.parser.add_argument("--warmup_steps", default=500, type=int, help="Step of training to perform learning rate warmup for.")
         self.parser.add_argument("--max_grad_norm", default=1.0, type=float, help="Max gradient norm.")
         self.parser.add_argument('--seed', type=int, default=42, help="random seed for initialization")
