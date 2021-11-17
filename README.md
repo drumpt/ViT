@@ -8,7 +8,7 @@ Code for training ViT with cifar10 dataset.
 ## Run code
 
 Run following command to train ViT with cifar10 dataset.
-If you want to do hyper-parameter tuning, please refer option.py and utils.py
+If you want to do hyper-parameter tuning, please refer options.py and utils.py
 ```
 python train.py
 ```
