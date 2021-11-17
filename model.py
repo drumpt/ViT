@@ -4,19 +4,10 @@ from torch import nn
 class PatchEmbedding(nn.Module):
     def __init__(self, in_channels = 3, patch_size = 16, emb_size = 768, img_size = 224):
         super(PatchEmbedding, self).__init__()
-        self.projection = nn.Conv2d(in_channels, emb_size, kernel_size=patch_size, stride=patch_size)
-        self.cls_token = nn.Parameter(torch.randn(1,1, emb_size))
-        self.positions = nn.Parameter(torch.randn((img_size // patch_size) **2 + 1, emb_size))
+        pass
         
     def forward(self, x):
-        b, _, _, _ = x.shape    # b x c x (h x p) x (w x p)
-        x = self.projection(x)  # b x e x h x w
-        x = x.flatten(2)    # b x e x (h x w)
-        x = x.transpose(1, 2)   # b x (h x w) x e
-        cls_tokens = self.cls_token.expand(b, -1, -1)   # b x 1 x e
-        x = torch.cat([cls_tokens, x], dim=1)   # b x (h x w + 1) x e
-        x += self.positions
-        return x
+        pass
 
 
 class MultiHeadAttention(nn.Module):
