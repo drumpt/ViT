@@ -4,10 +4,20 @@ from torch import nn
 class PatchEmbedding(nn.Module):
     def __init__(self, in_channels = 3, patch_size = 16, emb_size = 768, img_size = 224):
         super(PatchEmbedding, self).__init__()
-        pass
+        self.patch_size = patch_size
+        self.linear_projection = nn.Linear((patch_size ** 2) * in_channels, emb_size)
+        self.class_embedding = nn.Parameter(torch.randn(1, 1, emb_size))
+        self.positional_embedding = nn.Parameter(torch.randn((img_size // patch_size) ** 2 + 1, emb_size))
         
     def forward(self, x):
-        pass
+        b, c, h, w = x.shape
+        x = torch.permute(x, (0, 2, 3, 1)) # b, h, w, c
+        x = x.reshape(b, (h // self.patch_size * w // self.patch_size), (self.patch_size ** 2) * c) # b, n, p^2 * c where n = h // p * w // p
+        out = self.linear_projection(x) # b, n, 1
+        out = torch.cat((self.class_embedding.expand(b, -1, -1), out), 1) # b, (n + 1), 1
+        out += self.positional_embedding # b, (n + 1), 1
+        return out
+
 
 
 class MultiHeadAttention(nn.Module):
@@ -37,6 +47,7 @@ class MultiHeadAttention(nn.Module):
         out = torch.matmul(attention_probs, values).permute(0, 2, 1, 3).contiguous().view(b, n, self.emb_size)
         out = self.projection(out)
         return out
+
 
 
 class FeedForwardBlock(nn.Module):
@@ -97,6 +108,7 @@ class TransformerEncoder(nn.Module):
         return out
 
 
+
 class ClassificationHead(nn.Module):
     def __init__(self, emb_size = 768, n_classes = 1000):
         super(ClassificationHead, self).__init__()
@@ -109,6 +121,8 @@ class ClassificationHead(nn.Module):
         out = self.mlp_head(self.layernorm(x))
 
         return out
+
+
 
 class ViT(nn.Module):
     def __init__(self, in_channels = 3, patch_size = 16, emb_size = 768, img_size = 224, layers = 12, n_classes = 1000, num_heads = 12, dropout = 0.1, expansion = 4):

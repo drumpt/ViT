@@ -9,6 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 from utils import seed_everything, select_model, WarmupLinearSchedule, save_model, get_dataloader
 from options import Options
 import os
+from datetime import datetime
 
 
 def valid(args, global_step):
@@ -89,7 +90,8 @@ if __name__ == '__main__':
     args = Options().parse_args()
     
     os.makedirs(args.output_dir, exist_ok=True)
-    writer = SummaryWriter(log_dir=os.path.join("logs", args.net))
+    now_string = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
+    writer = SummaryWriter(log_dir=os.path.join("logs", f"weight_decay_{args.weight_decay}_patch_size_{args.patch_size}_{now_string}"))
     seed_everything(args.seed)
     
     trainloader, testloader = get_dataloader(args)
